@@ -352,7 +352,7 @@ class _ZmanimScreenState extends State<ZmanimScreen> {
                 child: IconButton(
                   icon: const Icon(Icons.menu),
                   onPressed: () {
-                    // TODO: open drawer/hamburger menu
+                    // TODO: open drawer
                   },
                   iconSize: 30,
                   padding: EdgeInsets.zero,
