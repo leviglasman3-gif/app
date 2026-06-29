@@ -1,0 +1,95 @@
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+/// Shows the first-launch disclaimer flow if not yet accepted.
+/// Returns true if the user accepted (or had already accepted).
+Future<bool> checkAndShowDisclaimers(BuildContext context) async {
+  // ignore: use_build_context_synchronously
+  final navigator = Navigator.of(context);
+  final prefs = await SharedPreferences.getInstance();
+  final accepted = prefs.getBool('disclaimers_accepted') ?? false;
+  if (accepted) return true;
+
+  // Show 3 sequential disclaimer dialogs, force accept
+  await _showDisclaimerPage(
+    // ignore: use_build_context_synchronously
+    navigator.context,
+    'Notice — Zmanim Accuracy',
+    'Please add 2 minutes to these zmanim l\'chumrah, since zmanim '
+        'calculations are inherently flawed due to variances relating to '
+        'temperature, barometric pressure and other factors; variances between '
+        'clocks (even on smartphones); rounding; variations in halachic '
+        'interpretations; and other factors.',
+    1,
+    3,
+  );
+
+  await _showDisclaimerPage(
+    // ignore: use_build_context_synchronously
+    navigator.context,
+    'Notice — Location Permissions',
+    'These zmanim use exact coordinates. Please ensure that you allow '
+        'exact location permissions.',
+    2,
+    3,
+  );
+
+  await _showDisclaimerPage(
+    // ignore: use_build_context_synchronously
+    navigator.context,
+    'Notice — Local Minyanim',
+    'Keep in mind that your local shul probably uses the city\'s zmanim, '
+        'and not exact coordinates, so minyanim times can be a minute or so off.',
+    3,
+    3,
+  );
+
+  // All disclaimers accepted — persist
+  await prefs.setBool('disclaimers_accepted', true);
+  return true;
+}
+
+Future<void> _showDisclaimerPage(
+  BuildContext context,
+  String title,
+  String body,
+  int page,
+  int totalPages,
+) async {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) {
+      return PopScope(
+        canPop: false,
+        child: AlertDialog(
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title),
+              const SizedBox(height: 4),
+              Text(
+                'Page $page of $totalPages',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+              ),
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Text(
+              body,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+          actions: [
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('I Accept'),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
