@@ -216,28 +216,8 @@ class _ZmanimScreenState extends State<ZmanimScreen> {
       final shaahMinutes = (shaahZmanisMs / 60000).floor();
       final shaahSeconds = ((shaahZmanisMs % 60000) / 1000).round();
 
-      // DEBUG: Print all zmanim to console
-            /*
-      debugPrint('[ZMAN_DEBUG] Date: ${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}');
-      debugPrint('[ZMAN_DEBUG] Location: ${_currentLatitude?.toStringAsFixed(4) ?? "N/A"}, ${_currentLongitude?.toStringAsFixed(4) ?? "N/A"}');
-      for (final entry in zmanim.entries) {
-        final value = entry.value;
-        String timeStr;
-        if (value is DateTime) {
-          final h = value.hour.toString().padLeft(2, '0');
-          final m = value.minute.toString().padLeft(2, '0');
-          final s = value.second.toString().padLeft(2, '0');
-          timeStr = '$h:$m:$s';
-        } else if (value == null) {
-          timeStr = 'null';
-        } else {
-          timeStr = value.toString();
-        }
-        debugPrint('[ZMAN_DEBUG] ${entry.key}: $timeStr');
-      }
 
-      debugPrint('[ZMAN_DEBUG]  Shaah Zmanit (Baal Hatanya): $shaahMinutes:$shaahSeconds');
-      */
+
 
       setState(() {
         _zmanim.addAll(zmanim);
