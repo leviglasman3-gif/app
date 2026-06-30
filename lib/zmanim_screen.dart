@@ -18,6 +18,7 @@ class _ZmanimScreenState extends State<ZmanimScreen> {
   String? _error;
   double? _currentLatitude;
   double? _currentLongitude;
+  double? _currentAltitude;
   DateTime _selectedDate = DateTime.now();
 
   @override
@@ -76,6 +77,7 @@ class _ZmanimScreenState extends State<ZmanimScreen> {
 
       _currentLatitude = position.latitude;
       _currentLongitude = position.longitude;
+      _currentAltitude = position.altitude;
 
       // Set location name from coordinates
       final latStr = position.latitude.toStringAsFixed(4);
@@ -119,7 +121,7 @@ class _ZmanimScreenState extends State<ZmanimScreen> {
         lat!, // latitude (negative = South)
         lng!, // longitude (negative = West, positive = East)
         now,
-        0, // elevation
+        _currentAltitude ?? 0, // elevation
       );
       location.setLocationName(_locationName ?? 'Current Location');
 
