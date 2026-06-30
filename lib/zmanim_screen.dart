@@ -233,6 +233,8 @@ class _ZmanimScreenState extends State<ZmanimScreen> {
         debugPrint('[ZMAN_DEBUG] ${entry.key}: $timeStr');
       }
 
+      debugPrint('[ZMAN_DEBUG]  Shaah Zmanit (Baal Hatanya): $shaahMinutes:$shaahSeconds');
+
       setState(() {
         _zmanim.addAll(zmanim);
         // BAAL_HATANYA_NATIVE: Shaah zmanis now from getShaahZmanisBaalHatanya()
