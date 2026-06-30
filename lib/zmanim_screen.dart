@@ -91,6 +91,8 @@ class _ZmanimScreenState extends State<ZmanimScreen> {
     }
   }
 
+  // BAAL_HATANYA_NATIVE: Replaced manual degree-offset calculations with native kosher_dart
+  // Baal Hatanya methods that match Chabad.org. See REVERT_LOG_BAAL_HATANYA.md to revert.
   void _calculateZmanim() {
     final lat = _currentLatitude;
     final lng = _currentLongitude;
@@ -121,44 +123,44 @@ class _ZmanimScreenState extends State<ZmanimScreen> {
       );
       location.setLocationName(_locationName ?? 'Current Location');
 
+      // BAAL_HATANYA_NATIVE: Using native ComplexZmanimCalendar Baal Hatanya methods
       final calendar = ComplexZmanimCalendar();
       calendar.setGeoLocation(location);
 
-      // Core Baal HaTanya / Chabad values
-      final netzAmiti = calendar.getSunriseOffsetByDegrees(90 + 1.583); // Baal HaTanya sunrise
-      final shkiahAmitis = calendar.getSunsetOffsetByDegrees(90 + 1.583); // Baal HaTanya sunset
+      // BAAL_HATANYA_NATIVE: Use native getSunriseBaalHatanya / getSunsetBaalHatanya (1.583° offset)
+      final netzAmiti = calendar.getSunriseBaalHatanya();
+      final shkiahAmitis = calendar.getSunsetBaalHatanya();
 
-      double shaahZmanisMs = 0;
-      if (netzAmiti != null && shkiahAmitis != null) {
-        shaahZmanisMs = (shkiahAmitis.millisecondsSinceEpoch - netzAmiti.millisecondsSinceEpoch).toDouble();
-        shaahZmanisMs /= 12;
-      }
+      // BAAL_HATANYA_NATIVE: Use native shaah zmanis (milliseconds double) for the day
+      final shaahZmanisMs = calendar.getShaahZmanisBaalHatanya();
 
       // Tomorrow morning's netz amiti for correct midnight calculation
       final tomorrow = now.add(const Duration(days: 1));
       final tomorrowCalendar = ComplexZmanimCalendar();
       tomorrowCalendar.setGeoLocation(location);
       tomorrowCalendar.setCalendar(tomorrow);
-      final netzAmitiTomorrow = tomorrowCalendar.getSunriseOffsetByDegrees(90 + 1.583);
+      // BAAL_HATANYA_NATIVE: Use native method for tomorrow
+      final netzAmitiTomorrow = tomorrowCalendar.getSunriseBaalHatanya();
 
       // Helper function: add temporal hours to a DateTime
       DateTime? addTemporalHours(DateTime? start, double hours) {
-        if (start == null) return null;
+        if (start == null || shaahZmanisMs <= 0) return null;
         return start.add(Duration(milliseconds: (shaahZmanisMs * hours).toInt()));
       }
 
       DateTime? subtractTemporalHours(DateTime? start, double hours) {
-        if (start == null) return null;
+        if (start == null || shaahZmanisMs <= 0) return null;
         return start.subtract(Duration(milliseconds: (shaahZmanisMs * hours).toInt()));
       }
 
       final sunrise = calendar.getSunrise();
       final sunset = calendar.getSunset();
 
-      // Calculate each zman
+      // BAAL_HATANYA_NATIVE: All zmanim use native Baal Hatanya methods
       final zmanim = <String, Object?>{
+        // BAAL_HATANYA_NATIVE: 16.9° - 72 min before netz amiti
         ' Dawn (Alot Hashachar)':
-            calendar.getSunriseOffsetByDegrees(90 + 16.9),
+            calendar.getAlosBaalHatanya(),
 
         ' Earliest Tallit and Tefillin (Misheyakir)':
             calendar.getSunriseOffsetByDegrees(90 + 10.2),
@@ -166,29 +168,47 @@ class _ZmanimScreenState extends State<ZmanimScreen> {
         ' Sunrise (Hanetz Hachamah)':
             sunrise,
 
+        // BAAL_HATANYA_NATIVE: 3 shaos zmaniyos after netz amiti
         ' Latest Shema (Sof Zman Krias Shema)':
-            addTemporalHours(netzAmiti, 3),
+            calendar.getSofZmanShmaBaalHatanya(),
 
+        // BAAL_HATANYA_NATIVE: 4 shaos zmaniyos after netz amiti
         ' Latest Shacharit (Sof Zman Shachris)':
-            addTemporalHours(netzAmiti, 4),
+            calendar.getSofZmanTfilaBaalHatanya(),
 
         ' Midday (Chatzot Hayom)':
             addTemporalHours(netzAmiti, 6),
 
+        // BAAL_HATANYA_NATIVE: 6.5 shaos zmaniyos after netz amiti
         ' Earliest Mincha (Mincha Gedolah)':
-            addTemporalHours(netzAmiti, 6.5),
+            calendar.getMinchaGedolaBaalHatanya(),
 
+        // BAAL_HATANYA_NATIVE: 9.5 shaos zmaniyos after netz amiti
         ' Mincha Ketanah ("Small Mincha")':
-            subtractTemporalHours(shkiahAmitis, 2.5),
+            calendar.getMinchaKetanaBaalHatanya(),
 
+        // BAAL_HATANYA_NATIVE: 10.75 shaos zmaniyos after netz amiti
         ' Plag Hamincha ("Half of Mincha")':
-            subtractTemporalHours(shkiahAmitis, 1.25),
+            calendar.getPlagHaminchaBaalHatanya(),
 
         ' Sunset (Shkiah)':
             sunset,
 
+        // BAAL_HATANYA_NATIVE: 6° below horizon
         ' Nightfall (Tzeit Hakochavim)':
-            calendar.getSunsetOffsetByDegrees(90 + 6.0),
+            calendar.getTzaisBaalHatanya(),
+
+        // BAAL_HATANYA_NATIVE: 8.5° lechumra
+        ' Nightfall 8.5° (Tzeit L\'Chumra)':
+            calendar.getTzaisGeonim8Point5Degrees(),
+
+        // BAAL_HATANYA_NATIVE: 4 shaos - Erev Pesach relevant
+        ' Sof Zman Achilas Chametz':
+            calendar.getSofZmanAchilasChametzBaalHatanya(),
+
+        // BAAL_HATANYA_NATIVE: 5 shaos - Erev Pesach relevant
+        ' Sof Zman Biur Chametz':
+            calendar.getSofZmanBiurChametzBaalHatanya(),
 
         // Midnight: midpoint between tonight's shkiah amitis and tomorrow's netz amiti
         ' Midnight (Chatzot HaLailah)':
@@ -201,7 +221,8 @@ class _ZmanimScreenState extends State<ZmanimScreen> {
 
       setState(() {
         _zmanim.addAll(zmanim);
-        _shaahZmanisDisplay = ' Shaah Zmanit (proportional hour): $shaahMinutes min $shaahSeconds sec';
+        // BAAL_HATANYA_NATIVE: Shaah zmanis now from getShaahZmanisBaalHatanya()
+        _shaahZmanisDisplay = ' Shaah Zmanit (Baal Hatanya): $shaahMinutes min $shaahSeconds sec';
         _isLoading = false;
       });
     } catch (e) {
