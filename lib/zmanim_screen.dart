@@ -115,7 +115,7 @@ class _ZmanimScreenState extends State<ZmanimScreen> {
 
       // Create GeoLocation for current position.
       // kosher_dart 2.0.20 GeoLocation.setLocation takes:
-      // locationName, latitude, longitude, dateTime, [elevation]
+      // locationName, latitude, longitude, dateTime, 
       final location = GeoLocation.setLocation(
         _locationName ?? 'Current Location',
         lat!, // latitude (negative = South)
