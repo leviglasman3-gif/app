@@ -161,7 +161,7 @@ class _ZmanimScreenState extends State<ZmanimScreen> {
             calendar.getSunriseOffsetByDegrees(90 + 10.2),
 
         ' Sunrise (Hanetz Hachamah)':
-            sunrise,
+            calendar.getSeaLevelSunrise(),
 
         // BAAL_HATANYA_NATIVE: 3 shaos zmaniyos after netz amiti
         ' Latest Shema (Sof Zman Krias Shema)':
@@ -187,7 +187,7 @@ class _ZmanimScreenState extends State<ZmanimScreen> {
             calendar.getPlagHaminchaBaalHatanya(),
 
         ' Sunset (Shkiah)':
-            sunset,
+            calendar.getSeaLevelSunset(),
 
         // BAAL_HATANYA_NATIVE: 6° below horizon
         ' Nightfall (Tzeit Hakochavim)':
