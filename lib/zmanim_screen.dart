@@ -220,7 +220,7 @@ class _ZmanimScreenState extends State<ZmanimScreen> {
       setState(() {
         _zmanim.addAll(zmanim);
         // BAAL_HATANYA_NATIVE: Shaah zmanis now from getShaahZmanisBaalHatanya()
-        _shaahZmanisDisplay = ' Shaah Zmanit : $shaahMinutes min $shaahSeconds sec';
+        _shaahZmanisDisplay = ' Shaah Zmanis : $shaahMinutes min $shaahSeconds sec';
         _isLoading = false;
       });
     } catch (e) {
