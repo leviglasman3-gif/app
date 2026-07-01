@@ -1,12 +1,12 @@
-# Release Checklist — Auto-Update System
+# Release Checklist — Auto-Update System (Download Link)
 
 ## Critical: VersionCode Management
 
 Android uses **versionCode (integer)** to determine if an update is available. The versionName string is ignored.
-- Current versionCode: **1** (`pubspec.yaml` → `version: 1.0.0+1`)
+- Current versionCode: **2** (`pubspec.yaml` → `version: 1.0.1+2`)
 - For every new release, **increment the build number** (the part after `+`):
-  - `version: 1.0.1+2` → versionCode = 2
   - `version: 1.0.2+3` → versionCode = 3
+  - `version: 1.0.3+4` → versionCode = 4
 
 The `version.json` file on GitHub must have a `buildNumber` field that matches this integer.
 
@@ -33,51 +33,43 @@ If you change the signing key:
 {
   "version": "1.0.1",
   "buildNumber": 2,
-  "releaseNotes": "Bug fixes and improvements"
+  "releaseNotes": "Bug fixes and improvements",
+  "downloadUrl": "https://github.com/brdsllg/app/releases/download/v2/app-release.apk"
 }
 ```
 
 - `buildNumber` must match the versionCode in your Android build (the integer after `+` in pubspec.yaml)
+- `downloadUrl` is the direct link to the APK file — this opens in the device browser for instant download
 - The auto-update system compares `buildNumber` against the local versionCode
 
 ## Release Process (Step by Step)
 
 1. **Bump version** in `pubspec.yaml`:
-   - Increment the build number: `1.0.0+1` → `1.0.1+2`
+   - Increment the build number: `1.0.1+2` → `1.0.2+3`
 
 2. **Update `version.json`** on GitHub:
    - Set `buildNumber` to match the new versionCode
-   - Update `version` and `releaseNotes`
+   - Update `version`, `releaseNotes`, and `downloadUrl`
 
 3. **Build the release APK:**
    ```bash
-   flutter build apk --target-platform android-arm64 --release
+   flutter build apk --release
    ```
-   Output: `build/app/outputs/flutter-apk/app-arm64-v8a-release.apk`
+   Output: `build/app/outputs/flutter-apk/app-release.apk`
 
 4. **Create a GitHub Release:**
-   - Tag: `v2` (must match the buildNumber, e.g., `v2` for versionCode 2)
-   - Upload `app-arm64-v8a-release.apk`
-   - The APK URL becomes: `https://github.com/brdsllg/app/releases/download/v{X}/app-arm64-v8a-release.apk`
-   - Where `{X}` is the build number
+   - Tag: `v{versionCode}` (e.g., `v3` for versionCode 3)
+   - Upload `app-release.apk` (or rename the generated APK to this name)
+   - The `downloadUrl` in `version.json` becomes: `https://github.com/brdsllg/app/releases/download/v{versionCode}/app-release.apk`
 
 5. **Test the update** by running the previous version on a device
 
-## FileProvider Note
+## How the Update Flow Works
 
-The app uses Android's `FileProvider` to safely share the downloaded APK with the system installer.
-- Provider authority: `${applicationId}.fileprovider`
-- Path config: `android/app/src/main/res/xml/provider_paths.xml`
-- Cache directory is used for temporary APK storage
-
-## APK Cleanup
-
-The `UpdateService` automatically deletes the downloaded APK:
-- After the installation intent is triggered
-- If the download fails
-- If the user cancels
-
-No manual cleanup needed.
+1. App launches → checks `version.json` once per day
+2. If `buildNumber` > local versionCode → shows dialog with version and release notes
+3. User taps **"Download"** → opens the `downloadUrl` in the device browser
+4. APK downloads directly → user taps the notification to install
 
 ## Update Frequency
 
