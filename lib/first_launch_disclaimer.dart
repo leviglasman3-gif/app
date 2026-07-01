@@ -15,11 +15,11 @@ Future<bool> checkAndShowDisclaimers(BuildContext context) async {
     // ignore: use_build_context_synchronously
     navigator.context,
     'Notice — Zmanim Accuracy',
-    'Please add 2 minutes to these zmanim l\'chumrah, since zmanim '
-        'calculations are inherently flawed due to variances relating to '
-        'temperature, barometric pressure and other factors; variances between '
-        'clocks (even on smartphones); rounding; variations in halachic '
-        'interpretations; and other factors.',
+    'Please add at least 2 minutes to these zmanim l\'chumrah, since '
+        'Calculated zmanim are inherently approximate due to factors such as '
+        'atmospheric conditions (including temperature and barometric pressure), '
+        'clock inaccuracies (including smartphones), rounding, differences in '
+        'halachic opinions, and other variables.',
     1,
     2,
   );
