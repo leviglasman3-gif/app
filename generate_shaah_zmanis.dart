@@ -8,7 +8,7 @@ void main() {
 
   // Date range: July 1–31, 2026
   final DateTime startDate = DateTime(2026, 7, 1);
-  final DateTime endDate = DateTime(2026, 7, 31);
+  final DateTime endDate = DateTime(2027, 7, 1);
 
   // Print markdown table header
   print('| Date | Shaah Zmanis (Baal Hatanya) |');
