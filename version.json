@@ -1,5 +1,6 @@
 {
-  "version": "1.0.0",
-  "buildNumber": 1,
-  "releaseNotes": "v1"
+  "version": "1.0.1",
+  "buildNumber": 2,
+  "releaseNotes": "Bug fixes and improvements",
+  "downloadUrl": "https://github.com/brdsllg/app/releases/download/v2/app-release.apk"
 }
