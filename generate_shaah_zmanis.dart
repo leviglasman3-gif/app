@@ -7,8 +7,8 @@ void main() {
   final String locationName = 'Lat: $latitude, Lng: $longitude';
 
   // Date range: July 1–31, 2026
-  final DateTime startDate = DateTime(2026, 9, 16);
-  final DateTime endDate = DateTime(2026, 9, 17);
+  final DateTime startDate = DateTime(2026, 9, 24);
+  final DateTime endDate = DateTime(2026, 9, 29);
 
   // Print markdown table header
   print('| Date | AlosHashachar | EarliestTefillin | NetzHachamah | LatestShema | LatestTefillah | Chatzos | MinchahGedolah | MinchahKetanah | PlagHaminchah | Shkiah | Tzeis | ChatzosNight | ShaahZmanit |');
