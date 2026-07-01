@@ -7,21 +7,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Represents the remote version info fetched from GitHub.
-class _RemoteVersionInfo {
+class RemoteVersionInfo {
   final String version;
   final int buildNumber;
   final String releaseNotes;
   final String downloadUrl;
 
-  _RemoteVersionInfo({
+  RemoteVersionInfo({
     required this.version,
     required this.buildNumber,
     required this.releaseNotes,
     required this.downloadUrl,
   });
 
-  factory _RemoteVersionInfo.fromJson(Map<String, dynamic> json) {
-    return _RemoteVersionInfo(
+  factory RemoteVersionInfo.fromJson(Map<String, dynamic> json) {
+    return RemoteVersionInfo(
       version: json['version'] as String? ?? '0.0.0',
       buildNumber: json['buildNumber'] as int? ?? 0,
       releaseNotes: json['releaseNotes'] as String? ?? '',
@@ -43,7 +43,7 @@ class UpdateService {
   /// Checks for an update at most once per day (by date).
   /// Returns the remote version info if an update is available, or null if
   /// the app is up to date or the check fails.
-  static Future<_RemoteVersionInfo?> checkForUpdate() async {
+  static Future<RemoteVersionInfo?> checkForUpdate() async {
     try {
       final prefs = await SharedPreferences.getInstance();
 
@@ -55,7 +55,7 @@ class UpdateService {
         final cachedBuild = prefs.getInt(_lastBuildKey);
         if (cachedBuild == null) return null;
         final cachedUrl = prefs.getString(_lastDownloadUrlKey) ?? '';
-        return _RemoteVersionInfo(
+        return RemoteVersionInfo(
           version: '',
           buildNumber: cachedBuild,
           releaseNotes: '',
@@ -70,7 +70,7 @@ class UpdateService {
 
       if (response.statusCode != 200) return null;
 
-      final remote = _RemoteVersionInfo.fromJson(
+      final remote = RemoteVersionInfo.fromJson(
         jsonDecode(response.body) as Map<String, dynamic>,
       );
 
