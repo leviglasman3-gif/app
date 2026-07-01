@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'zmanim_screen.dart';
 import 'first_launch_disclaimer.dart';
+import 'services/update_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,6 +47,8 @@ class _AppGateState extends State<_AppGate> {
   Future<void> _init() async {
     await checkAndShowDisclaimers(context);
     if (mounted) {
+      // Non-blocking update check — runs after the UI is ready
+      UpdateService.runUpdateFlow(context);
       setState(() => _ready = true);
     }
   }
